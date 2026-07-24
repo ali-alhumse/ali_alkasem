@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <style>
+body {
+   background-color: white; /* Ensure the iframe has a white background */
+}
+
+/* ============ style.css ============ */
+/* =========================================================
+   Ali Ahmad Algasem — Portfolio
+   ثيم Blueprint / Terminal · RTL · وضع ليلي/نهاري
+   ملاحظة: المحتوى يظهر افتراضيًا، وحركات الكشف تُفعَّل فقط
+   عندما يضيف JS الصنف "js" إلى عنصر html.
+========================================================= */
+
+/* ---------- المتغيّرات ---------- */
+:root {
+  --bg: #070f1e;
+  --bg2: #0b1628;
+  --surface: #0e1b31;
+  --surface2: #12223c;
+  --border: rgba(148, 163, 184, .16);
+  --text: #e8eefb;
+  --muted: #9db0c9;
+  --teal: #2dd4bf;
+  --cyan: #38bdf8;
+  --amber: #fbbf24;
+  --grid: rgba(148, 163, 184, .05);
+  --grad: linear-gradient(135deg, var(--teal), var(--cyan));
+  --shadow: 0 22px 55px rgba(2, 8, 20, .55);
+  --radius: 14px;
+  --font-display: 'Noto Kufi Arabic', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --nav-h: 72px;
+}
+[data-theme="light"] {
+  --bg: #f2f6fc;
+  --bg2: #e9eff8;
+  --surface: #ffffff;
+  --surface2: #f5f9fd;
+  --border: rgba(15, 40, 70, .12);
+  --text: #0d1b2e;
+  --muted: #4d617c;
+  --teal: #0d9488;
+  --cyan: #0284c7;
+  --amber: #d97706;
+  --grid: rgba(13, 40, 80, .05);
+  --shadow: 0 18px 45px rgba(13, 35, 70, .12);
+}
+
+/* ---------- إعادة الضبط ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 14px); -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--teal); color: #04121f; }
+
+.mono { font-family: var(--font-mono); }
+.container { width: min(1160px, 92%); margin-inline: auto; }
+
+/* ---------- شريط تمرير مخصّص ---------- */
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--teal), var(--cyan)); border-radius: 9px; border: 3px solid var(--bg2); }
+
+/* ---------- طبقات الخلفية ---------- */
+#bgCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+[data-theme="light"] #bgCanvas { opacity: .55; }
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 80%);
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 80%);
+}
+.glow { position: fixed; z-index: 0; border-radius: 50%; filter: blur(90px); pointer-events: none; }
+.glow-1 { width: 540px; height: 540px; top: -150px; inset-inline-start: -130px; background: radial-gradient(circle, rgba(45, 212, 191, .20), transparent 65%); }
+.glow-2 { width: 520px; height: 520px; bottom: -160px; inset-inline-end: -140px; background: radial-gradient(circle, rgba(251, 191, 36, .14), transparent 65%); }
+header, main, footer { position: relative; z-index: 1; }
+
+/* ---------- رابط التخطّي ---------- */
+.skip-link { position: absolute; top: -60px; inset-inline-start: 12px; background: var(--teal); color: #04121f; padding: 10px 16px; border-radius: 8px; font-weight: 700; z-index: 100; transition: top .25s; }
+.skip-link:focus { top: 12px; }
+
+/* ---------- شريط التنقّل ---------- */
+.nav { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background .3s, border-color .3s, box-shadow .3s; border-bottom: 1px solid transparent; }
+.nav.scrolled { background: var(--bg); background: color-mix(in srgb, var(--bg) 84%, transparent); backdrop-filter: blur(12px); border-bottom-color: var(--border); box-shadow: 0 8px 30px rgba(0, 0, 0, .18); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: var(--nav-h); gap: 18px; }
+.logo { font-family: var(--font-mono); font-weight: 600; font-size: 1.15rem; color: var(--teal); letter-spacing: .5px; }
+.logo:hover { color: var(--cyan); }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-links a { position: relative; padding: 8px 12px; font-size: .95rem; color: var(--muted); font-weight: 500; border-radius: 8px; transition: color .25s; }
+.nav-links a::after { content: ""; position: absolute; inset-inline: 12px; bottom: 2px; height: 2px; background: var(--teal); transform: scaleX(0); transform-origin: right; transition: transform .3s; border-radius: 2px; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--teal); }
+.nav-links a.active::after { transform: scaleX(1); }
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); transition: color .25s, border-color .25s, transform .3s; }
+.icon-btn:hover { color: var(--teal); border-color: var(--teal); transform: rotate(12deg); }
+.icon-moon { display: none; }
+
+/* زر القائمة (موبايل) */
+.nav-toggle { display: none; flex-direction: column; gap: 5px; }
+.nav-toggle span { width: 20px; height: 2px; background: currentColor; border-radius: 2px; transition: transform .3s, opacity .3s; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---------- الأزرار ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 13px 24px; border-radius: 11px; font-weight: 600; font-size: .97rem; transition: transform .25s, box-shadow .25s, background .25s, border-color .25s, color .25s; position: relative; overflow: hidden; white-space: nowrap; }
+.btn-sm { padding: 9px 16px; font-size: .88rem; }
+.btn-block { width: 100%; }
+.btn-primary { background: var(--grad); color: #04121f; box-shadow: 0 10px 26px rgba(45, 212, 191, .28); }
+.btn-primary::after { content: ""; position: absolute; top: 0; inset-inline-start: -120%; width: 60%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .45), transparent); transform: skewX(-20deg); transition: inset-inline-start .6s; }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(45, 212, 191, .4); }
+.btn-primary:hover::after { inset-inline-start: 130%; }
+.btn-outline { border: 1px solid var(--amber); color: var(--amber); }
+.btn-outline:hover { background: rgba(251, 191, 36, .12); transform: translateY(-3px); }
+.btn-ghost { border: 1px solid var(--border); color: var(--muted); }
+.btn-ghost:hover { color: var(--text); border-color: var(--teal); transform: translateY(-3px); }
+
+/* ---------- Hero ---------- */
+.hero { padding: calc(var(--nav-h) + 60px) 0 90px; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; position: relative; }
+.hero-grid { display: grid; gap: 56px; align-items: center; }
+.kicker { color: var(--amber); font-size: .9rem; letter-spacing: 1px; margin-bottom: 14px; }
+.hero h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.12; letter-spacing: -.5px; position: relative; z-index: 0; }
+.hl { color: var(--teal); position: relative; }
+.hl::after { content: ""; position: absolute; inset-inline: 0; bottom: .06em; height: 6px; background: var(--amber); border-radius: 4px; opacity: .45; z-index: -1; }
+.type-line { font-size: 1.1rem; color: var(--text); margin-top: 16px; min-height: 1.6em; }
+.type-line .prompt { color: var(--amber); }
+.caret { display: inline-block; width: .55ch; height: 1.1em; background: var(--teal); vertical-align: text-bottom; margin-inline-start: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.hero-sum { color: var(--muted); max-width: 56ch; margin-top: 22px; font-size: 1.05rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 18px 22px; margin-top: 28px; color: var(--muted); font-size: .9rem; }
+.hero-meta li { display: inline-flex; align-items: center; gap: 7px; }
+.hero-meta svg { color: var(--teal); flex-shrink: 0; }
+.avail { display: inline-flex; align-items: center; gap: 9px; margin-top: 22px; font-size: .9rem; color: var(--muted); padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
+.avail .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 0 rgba(45, 212, 191, .55); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(45, 212, 191, .5); } 70% { box-shadow: 0 0 0 10px rgba(45, 212, 191, 0); } 100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0); } }
+
+/* الطرفية */
+.hero-visual { position: relative; }
+.term { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; position: relative; }
+.term::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--grad); }
+.term-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.tdot, .bdot { width: 12px; height: 12px; border-radius: 50%; }
+.tdot.r, .bdot.r { background: #ff5f57; }
+.tdot.y, .bdot.y { background: #febc2e; }
+.tdot.g, .bdot.g { background: #28c840; }
+.term-title { margin-inline-start: 10px; font-family: var(--font-mono); font-size: .8rem; color: var(--muted); }
+.term-body { padding: 18px 18px 22px; font-family: var(--font-mono); font-size: .86rem; line-height: 1.85; min-height: 290px; }
+.t-line { white-space: pre-wrap; word-break: break-word; }
+.t-prompt { color: var(--teal); }
+.t-cmd { color: var(--text); }
+.t-out { color: var(--muted); padding-inline-start: 14px; }
+.t-caret { display: inline-block; width: 8px; height: 1.05em; background: var(--teal); vertical-align: text-bottom; animation: blink 1s steps(1) infinite; }
+
+/* بطاقة الصورة والرقائق العائمة */
+.avatar-chip { position: absolute; bottom: -22px; inset-inline-start: -12px; display: flex; align-items: center; gap: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 13px; padding: 9px 15px 9px 9px; box-shadow: var(--shadow); }
+.avatar-chip img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--teal); background: var(--surface); }
+.avatar-chip strong { display: block; font-size: .9rem; }
+.avatar-chip span { font-size: .72rem; color: var(--muted); }
+.float-chip { position: absolute; padding: 6px 13px; border-radius: 999px; font-size: .78rem; border: 1px solid var(--border); background: var(--surface); box-shadow: 0 8px 20px rgba(0, 0, 0, .25); animation: float 6s ease-in-out infinite; }
+.fc-1 { top: -16px; inset-inline-end: 6%; color: var(--teal); border-color: var(--teal); }
+.fc-2 { bottom: 30%; inset-inline-end: -14px; color: var(--amber); border-color: var(--amber); animation-delay: 1.4s; }
+.fc-3 { top: 36%; inset-inline-start: -16px; color: var(--cyan); border-color: var(--cyan); animation-delay: 2.6s; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.scroll-hint { position: absolute; bottom: 24px; inset-inline-start: 50%; transform: translateX(50%); color: var(--muted); animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translate(50%, 0); } 50% { transform: translate(50%, 8px); } }
+
+/* ---------- شريط التقنيات ---------- */
+.marquee { overflow: hidden; border-block: 1px solid var(--border); background: var(--bg2); direction: ltr; padding-block: 14px; }
+.marquee-track { display: flex; gap: 2.4rem; width: max-content; animation: scrollX 30s linear infinite; align-items: center; }
+.marquee-track span { font-family: var(--font-mono); color: var(--muted); font-size: .92rem; letter-spacing: .5px; }
+.marquee-track .sep { color: var(--amber); }
+@keyframes scrollX { to { transform: translateX(-50%); } }
+
+/* ---------- رؤوس الأقسام ---------- */
+section { padding-block: clamp(72px, 9vw, 104px); }
+.sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+.sec-num { font-family: var(--font-mono); color: var(--teal); font-size: 1rem; }
+.sec-head h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.7rem, 4vw, 2.5rem); white-space: nowrap; }
+.sec-line { flex: 1; height: 1px; background: linear-gradient(to left, transparent, var(--border)); }
+
+/* ---------- نبذة عنّي ---------- */
+.about-grid { display: grid; gap: 40px; }
+.about-text p { color: var(--muted); margin-bottom: 16px; font-size: 1.04rem; }
+.about-text strong { color: var(--teal); font-weight: 600; }
+.lang-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.lang-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: .9rem; }
+.dot-sm { width: 8px; height: 8px; border-radius: 50%; }
+.dot-sm.teal { background: var(--teal); }
+.dot-sm.amber { background: var(--amber); }
+.about-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.mini-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: transform .3s, border-color .3s, box-shadow .3s; }
+.mini-card:hover { transform: translateY(-5px); border-color: var(--teal); box-shadow: var(--shadow); }
+.mini-ic { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 12px; background: rgba(45, 212, 191, .14); color: var(--teal); margin-bottom: 14px; }
+.mini-card h3 { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 8px; }
+.mini-card p { color: var(--muted); font-size: .92rem; }
+
+/* ---------- المهارات ---------- */
+.skills-grid { display: grid; gap: 22px; }
+.skill-card { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; overflow: hidden; transition: transform .3s, border-color .3s, box-shadow .3s; }
+.skill-card::before { content: ""; position: absolute; top: 0; inset-inline-start: 0; width: 60px; height: 3px; background: var(--grad); }
+.skill-card:hover { transform: translateY(-6px); border-color: var(--teal); box-shadow: var(--shadow); }
+.skill-ic { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 13px; background: rgba(45, 212, 191, .14); color: var(--teal); margin-bottom: 16px; }
+.skill-card h3 { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 18px; }
+.skill-group { margin-bottom: 16px; }
+.skill-group:last-child { margin-bottom: 0; }
+.skill-group h4 { font-size: .82rem; color: var(--amber); font-weight: 600; margin-bottom: 10px; letter-spacing: .3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 9px; }
+.chip { font-family: var(--font-mono); font-size: .82rem; padding: 7px 13px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface2); color: var(--muted); transition: color .25s, border-color .25s, transform .25s; }
+.chip:hover { color: var(--teal); border-color: var(--teal); transform: translateY(-2px); }
+
+/* ---------- الخبرات (Timeline) ---------- */
+.timeline { position: relative; padding-inline-start: 36px; }
+.timeline::before { content: ""; position: absolute; inset-inline-start: 9px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(var(--teal), rgba(45, 212, 191, .08)); }
+.t-item { position: relative; margin-bottom: 34px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; transition: transform .3s, border-color .3s, box-shadow .3s; }
+.t-item:last-child { margin-bottom: 0; }
+.t-item::before { content: ""; position: absolute; inset-inline-start: -33px; top: 26px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg); border: 3px solid var(--teal); box-shadow: 0 0 0 4px rgba(45, 212, 191, .18); }
+.t-item:hover { transform: translateX(-4px); border-color: var(--teal); box-shadow: var(--shadow); }
+.t-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.t-year { display: inline-block; font-size: .8rem; color: var(--amber); background: rgba(251, 191, 36, .12); padding: 4px 11px; border-radius: 7px; }
+.t-tag { font-size: .72rem; color: var(--muted); border: 1px solid var(--border); padding: 3px 10px; border-radius: 999px; }
+.t-item h3 { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 4px; }
+.t-org { color: var(--cyan); font-size: .92rem; margin-bottom: 10px; }
+.t-item p { color: var(--muted); font-size: .95rem; }
+.t-ach { color: var(--text) !important; margin-top: 10px; padding: 10px 13px; border-inline-start: 3px solid var(--amber); background: var(--surface2); border-radius: 8px; }
+
+/* ---------- المشاريع ---------- */
+.project { display: grid; gap: 30px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 26px; margin-bottom: 36px; transition: border-color .3s, box-shadow .3s; }
+.project:last-child { margin-bottom: 0; }
+.project:hover { border-color: var(--teal); box-shadow: var(--shadow); }
+.browser { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--bg2); }
+.browser-bar { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+.url { flex: 1; font-family: var(--font-mono); font-size: .74rem; background: var(--surface2); border-radius: 7px; padding: 5px 11px; color: var(--muted); text-align: left; margin-inline-start: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-media { overflow: hidden; border-radius: 12px; }
+.project-media img { aspect-ratio: 16 / 11; width: 100%; object-fit: cover; background: linear-gradient(135deg, var(--surface2), var(--bg2)); transition: transform .5s; }
+.project:hover .project-media img { transform: scale(1.04); }
+.project-info h3 { font-family: var(--font-display); font-size: 1.4rem; }
+.proj-sub { color: var(--amber); font-size: .82rem; margin: 4px 0 14px; }
+.project-info > p { color: var(--muted); margin-bottom: 16px; }
+.cs-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.cs-list li { color: var(--muted); font-size: .92rem; padding-inline-start: 18px; position: relative; }
+.cs-list li::before { content: ""; position: absolute; inset-inline-start: 0; top: 9px; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); }
+.hl-p { color: var(--amber); font-weight: 600; }
+.hl-s { color: var(--teal); font-weight: 600; }
+.proj-tech { margin-bottom: 18px; }
+.proj-links { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ---------- التعليم والشهادات ---------- */
+.edu-grid { display: grid; gap: 24px; }
+.edu-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; position: relative; overflow: hidden; }
+.edu-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--grad); }
+.edu-ic { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 14px; background: rgba(45, 212, 191, .14); color: var(--teal); margin-bottom: 18px; }
+.edu-card h3 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 6px; }
+.edu-org { color: var(--cyan); margin-bottom: 22px; }
+.edu-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.edu-facts div { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+.edu-facts strong { display: block; font-family: var(--font-display); color: var(--teal); font-size: 1rem; }
+.edu-facts span { font-size: .78rem; color: var(--muted); }
+.edu-side { display: grid; gap: 24px; }
+.cert-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; }
+.cert-card h3 { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 18px; }
+.cert-list li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--muted); font-size: .95rem; }
+.cert-list li:last-child { border-bottom: none; }
+.cert-list svg { color: var(--amber); flex-shrink: 0; }
+.lang-list { display: flex; flex-direction: column; gap: 12px; }
+.lang-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; }
+.lang-level { font-family: var(--font-mono); font-size: .82rem; color: var(--teal); }
+
+/* ---------- الإنجازات ---------- */
+.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 36px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 18px; text-align: center; transition: transform .3s, border-color .3s; }
+.stat:hover { transform: translateY(-5px); border-color: var(--teal); }
+.stat-num { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.2rem, 6vw, 3rem); color: var(--teal); line-height: 1; display: inline-flex; align-items: baseline; }
+.stat-suf { font-size: .9rem; color: var(--amber); margin-inline-start: 4px; }
+.stat-label { display: block; color: var(--muted); font-size: .9rem; margin-top: 10px; }
+.highlights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.hl-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: transform .3s, border-color .3s, box-shadow .3s; }
+.hl-card:hover { transform: translateY(-5px); border-color: var(--amber); box-shadow: var(--shadow); }
+.hl-ic { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 12px; background: rgba(251, 191, 36, .14); color: var(--amber); margin-bottom: 14px; }
+.hl-card h3 { font-family: var(--font-display); font-size: 1.08rem; margin-bottom: 8px; }
+.hl-card p { color: var(--muted); font-size: .92rem; }
+
+/* ---------- التواصل ---------- */
+.con-intro { color: var(--muted); max-width: 60ch; margin: -22px auto 40px; text-align: center; font-size: 1.05rem; }
+.contact-grid { display: grid; gap: 28px; }
+.contact-info { display: grid; gap: 14px; }
+.c-card { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; transition: transform .3s, border-color .3s; }
+.c-card:hover { transform: translateX(-5px); border-color: var(--teal); }
+.c-ic { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 12px; background: rgba(45, 212, 191, .14); color: var(--teal); flex-shrink: 0; }
+.c-label { display: block; font-size: .78rem; color: var(--muted); }
+.c-val { font-weight: 600; }
+.contact-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label { font-size: .88rem; color: var(--muted); font-weight: 500; }
+.field input, .field textarea { font-family: inherit; font-size: .98rem; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; transition: border-color .25s, box-shadow .25s; resize: vertical; }
+.field input::placeholder, .field textarea::placeholder { color: var(--muted); opacity: .7; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45, 212, 191, .18); }
+.form-note { font-size: .8rem; color: var(--muted); text-align: center; }
+
+/* ---------- Footer ---------- */
+.footer { border-top: 1px solid var(--border); background: var(--bg2); padding-block: 50px 26px; margin-top: 30px; }
+.footer-inner { display: grid; gap: 28px; align-items: start; }
+.footer-brand .logo { font-size: 1.3rem; }
+.footer-brand p { color: var(--muted); margin-top: 12px; max-width: 38ch; font-size: .92rem; }
+.footer-nav { display: flex; flex-wrap: wrap; gap: 18px; }
+.footer-nav a { color: var(--muted); font-size: .92rem; transition: color .25s; }
+.footer-nav a:hover { color: var(--teal); }
+.footer-social { display: flex; gap: 12px; }
+.footer-social a { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 11px; color: var(--muted); transition: color .25s, border-color .25s, transform .25s; }
+.footer-social a:hover { color: var(--teal); border-color: var(--teal); transform: translateY(-3px); }
+.footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 36px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--muted); font-size: .84rem; }
+
+/* ---------- زر العودة للأعلى ---------- */
+.back-top { position: fixed; bottom: 24px; inset-inline-end: 24px; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); color: var(--teal); box-shadow: var(--shadow); z-index: 40; opacity: 0; pointer-events: none; transform: translateY(14px); transition: opacity .3s, transform .3s, background .25s, color .25s; }
+.back-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.back-top:hover { background: var(--teal); color: #04121f; }
+
+/* ---------- حركات الكشف (تُفعَّل فقط مع JS) ---------- */
+.reveal { transition: opacity .7s ease, transform .7s ease; transition-delay: var(--d, 0s); }
+.js .reveal { opacity: 0; transform: translateY(26px); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- الاستجابة ---------- */
+@media (max-width: 980px) {
+  .nav-toggle { display: flex; }
+  .nav-links {
+    position: fixed; top: var(--nav-h); inset-inline: 0; flex-direction: column; align-items: stretch;
+    background: var(--bg2); border-bottom: 1px solid var(--border); padding: 14px 6%; gap: 2px;
+    transform: translateY(-130%); transition: transform .35s ease; box-shadow: 0 20px 40px rgba(0, 0, 0, .3);
+    z-index: 49;
+  }
+  .nav-links.open { transform: translateY(0); }
+  .nav-links a { padding: 13px 12px; border-radius: 10px; }
+  .nav-links a::after { display: none; }
+  .nav-links a.active { background: rgba(45, 212, 191, .12); }
+}
+@media (min-width: 760px) {
+  .about-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .skills-grid .skill-card:first-child { grid-column: 1 / -1; }
+  .edu-grid { grid-template-columns: 1.1fr .9fr; align-items: start; }
+  .contact-grid { grid-template-columns: 1fr 1.1fr; align-items: start; }
+  .footer-inner { grid-template-columns: 1.4fr 1fr auto; align-items: center; }
+}
+@media (min-width: 900px) {
+  .project { grid-template-columns: 1.05fr 1fr; align-items: center; }
+  .project.flip .project-media { order: 2; }
+}
+@media (min-width: 1024px) {
+  .hero-grid { grid-template-columns: 1.05fr .95fr; }
+  .skills-grid { grid-template-columns: repeat(3, 1fr); }
+  .skills-grid .skill-card:first-child { grid-column: auto; }
+  .stats { grid-template-columns: repeat(4, 1fr); }
+  .highlights { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 560px) {
+  .about-cards { grid-template-columns: 1fr; }
+  .edu-facts { grid-template-columns: 1fr; }
+  .fc-2, .fc-3 { display: none; }
+  .avatar-chip { inset-inline-start: 50%; transform: translateX(50%); bottom: -26px; }
+}
+
+/* ---------- تقليل الحركة ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  html { scroll-behavior: auto; }
+  .js .reveal { opacity: 1; transform: none; }
+}
+
+/* ---------- الطباعة ---------- */
+@media print {
+  .nav, #bgCanvas, .glow, .back-top, .scroll-hint, .marquee, .hero-cta, .contact-form, .float-chip, #themeToggle, #navToggle, body::before { display: none !important; }
+  body { background: #fff; color: #000; }
+  .js .reveal { opacity: 1 !important; transform: none !important; }
+  section { padding-block: 16px; }
+  .project:hover .project-media img { transform: none; }
+}
+
+
+              </style>
+                        </head>
+                        <body>
+                            <!-- ============ index.html ============ -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ali Ahmad Alkasem | Front-end Developer — React &amp; Tailwind CSS</title>
+  <meta name="description" content="Ali Ahmad Alkasem — طالب هندسة معلوماتية (مسار برمجيات) ومطوّر واجهات أمامية متخصص في React و Tailwind CSS، مع خبرة عملية في بناء تطبيقات ويب متكاملة عبر Supabase و PostgreSQL." />
+  <meta name="keywords" content="Ali Algasem, Front-end Developer, React, Tailwind CSS, Supabase, PostgreSQL, JavaScript, Portfolio, Syria" />
+  <meta name="author" content="Ali Ahmad Algasem" />
+  <meta name="theme-color" content="#070f1e" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Ali Ahmad Alkasem | Front-end Developer" />
+  <meta property="og:description" content="مطوّر واجهات أمامية متخصص في React و Tailwind CSS — بورتفوليو تفاعلي." />
+  <meta property="og:image" content="https://image.qwenlm.ai/public_source/5f2c24d3-f9b4-42e5-8269-025c6413b2df/1508c4545-12f0-477d-b859-b08c36cba937.png" />
+
+  <!-- خطوط عبر CDN fontsource -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-kufi-arabic/700.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-kufi-arabic/900.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans-arabic/300.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans-arabic/400.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans-arabic/500.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans-arabic/700.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono/400.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono/600.css" />
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- بيانات منظمة لأغراض SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ali Ahmad Algasem",
+    "jobTitle": "Front-end Web Developer",
+    "url": "https://github.com/ali-alhumse",
+    "email": "mailto:alialhumse820@gmail.com",
+    "address": { "@type": "PostalAddress", "addressLocality": "Jarabulus", "addressRegion": "Aleppo", "addressCountry": "SY" },
+    "knowsAbout": ["React","Tailwind CSS","JavaScript","HTML","CSS","Supabase","PostgreSQL","SQL","C++","Python"]
+  }
+  </script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">تخطّى إلى المحتوى</a>
+
+  <!-- طبقات الخلفية المحيطة -->
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="glow glow-1" aria-hidden="true"></div>
+  <div class="glow glow-2" aria-hidden="true"></div>
+
+  <!-- ============ شريط التنقّل ============ -->
+  <header class="nav" id="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="logo mono" aria-label="Ali Ahmad Algasem - الرئيسية">&lt;Ali&nbsp;/&gt;</a>
+
+      <nav aria-label="التنقّل الرئيسي">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#home">الرئيسية</a></li>
+          <li><a href="#about">نبذة عنّي</a></li>
+          <li><a href="#skills">المهارات</a></li>
+          <li><a href="#experience">الخبرات</a></li>
+          <li><a href="#projects">المشاريع</a></li>
+          <li><a href="#education">التعليم</a></li>
+          <li><a href="#contact">تواصل</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
+          <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="navToggle" class="icon-btn nav-toggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ Hero ============ -->
+    <section class="hero" id="home" aria-label="مقدمة">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="kicker mono reveal" style="--d:.05s">&lt;hello&nbsp;world&nbsp;/&gt;</p>
+          <h1 class="reveal" style="--d:.12s">علي أحمد <span class="hl">القاسم</span></h1>
+          <p class="type-line mono reveal" style="--d:.2s"><span class="prompt">&gt;</span>&nbsp;<span id="typewriter"></span><span class="caret" aria-hidden="true"></span></p>
+          <p class="hero-sum reveal" style="--d:.28s">طالب هندسة معلوماتية في السنة الثالثة (مسار هندسة البرمجيات) بجامعة الرواد للعلوم والتقنية، متخصص في تطوير الواجهات الأمامية باستخدام React و Tailwind CSS، مع خبرة عملية في بناء تطبيقات ويب متكاملة عبر Supabase و PostgreSQL. بنيتُ بوابة خدمات طلابية لاقت اهتمامًا من قيادة الجامعة، وأبحث دائمًا عن فرص لأقدّم قيمة حقيقية عبر واجهات حديثة وسريعة ومتاحة للجميع.</p>
+
+          <div class="hero-cta reveal" style="--d:.36s">
+            <button class="btn btn-primary" id="downloadCv" type="button" title="طباعة / حفظ كـ PDF">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+              تحميل السيرة الذاتية
+            </button>
+            <a class="btn btn-outline" href="#projects">استعرض المشاريع</a>
+            <a class="btn btn-ghost" href="#contact">تواصل معي</a>
+          </div>
+
+          <ul class="hero-meta reveal" style="--d:.44s">
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> جرابلس، حلب، سوريا</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> <span dir="ltr">alialhumse820@gmail.com</span></li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg> <span dir="ltr">github.com/ali-alhumse</span></li>
+          </ul>
+
+          <div class="avail reveal" style="--d:.5s"><span class="dot"></span> متاح لفرص العمل والتعاون</div>
+        </div>
+
+        <!-- الطرفية التفاعلية -->
+        <div class="hero-visual reveal" style="--d:.3s">
+          <div class="term" dir="ltr" role="img" aria-label="طرفية تعرض بيانات المطوّر">
+            <div class="term-bar">
+              <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+              <span class="term-title">ali@portfolio:~</span>
+            </div>
+            <div class="term-body" id="termBody"></div>
+          </div>
+
+          <div class="avatar-chip">
+            <img src="https://image.qwenlm.ai/public_source/5f2c24d3-f9b4-42e5-8269-025c6413b2df/1508c4545-12f0-477d-b859-b08c36cba937.png" alt="صورة توضيحية للمطوّر علي القاسم" width="44" height="44" loading="lazy" />
+            <div>
+              <strong>Ali Alkasem</strong>
+              <span class="mono">Front-end Developer</span>
+            </div>
+          </div>
+
+          <span class="float-chip fc-1 mono">React</span>
+          <span class="float-chip fc-2 mono">Tailwind CSS</span>
+          <span class="float-chip fc-3 mono">Supabase</span>
+        </div>
+      </div>
+
+      <a class="scroll-hint" href="#about" aria-label="الانتقال للأسفل">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </a>
+    </section>
+
+    <!-- شريط التقنيات المتحرك -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marqueeTrack">
+        <span>HTML5</span><span class="sep">✦</span><span>CSS3</span><span class="sep">✦</span><span>JavaScript</span><span class="sep">✦</span><span>React</span><span class="sep">✦</span><span>Tailwind CSS</span><span class="sep">✦</span><span>Supabase</span><span class="sep">✦</span><span>PostgreSQL</span><span class="sep">✦</span><span>SQL</span><span class="sep">✦</span><span>C++ (OOP)</span><span class="sep">✦</span><span>Python</span><span class="sep">✦</span><span>Git &amp; GitHub</span><span class="sep">✦</span><span>Figma</span><span class="sep">✦</span><span>Problem Solving</span><span class="sep">✦</span>
+      </div>
+    </div>
+
+    <!-- ============ نبذة عنّي ============ -->
+    <section id="about" aria-labelledby="about-t">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="sec-num mono">01</span>
+          <h2 id="about-t">نبذة عنّي</h2>
+          <span class="sec-line"></span>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-text reveal" style="--d:.1s">
+            <p>أنا طالب هندسة معلوماتية في السنة الثالثة (مسار هندسة البرمجيات) بجامعة الرواد للعلوم والتقنية، أركّز على تطوير الواجهات الأمامية باستخدام <strong>React</strong> و <strong>Tailwind CSS</strong>، مع خبرة عملية في بناء تطبيقات ويب متكاملة عبر <strong>Supabase</strong> و <strong>PostgreSQL</strong>.</p>
+            <p>بنيتُ بوابة خدمات طلابية جمعت المواد والملخصات والامتحانات السابقة والفيديوهات التعليمية في منصة واحدة، ولاقت اهتمامًا قويًا من قيادة الجامعة بما في ذلك نائب الرئيس. أؤمن بالتعلّم الذاتي المستمر وحل المشكلات، وأسعى لبناء واجهات نظيفة وسريعة ومتاحة تعكس قيمة حقيقية للمستخدم والشركة.</p>
+
+            <div class="lang-row">
+              <span class="lang-pill"><span class="dot-sm teal"></span> العربية — لغة أم</span>
+              <span class="lang-pill"><span class="dot-sm amber"></span> الإنجليزية — مستوى متوسط</span>
+            </div>
+          </div>
+
+          <div class="about-cards">
+            <article class="mini-card reveal" style="--d:.15s">
+              <span class="mini-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg></span>
+              <h3>تطوير متكامل</h3>
+              <p>بناء تطبيقات ويب كاملة من الواجهة إلى قاعدة البيانات عبر React و Tailwind و Supabase و PostgreSQL.</p>
+            </article>
+            <article class="mini-card reveal" style="--d:.25s">
+              <span class="mini-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3 6.5 7 .9-5 4.8 1.3 7L12 17.8 5.4 21.2 6.7 14.2l-5-4.8 7-.9z"/></svg></span>
+              <h3>أثر مثبت</h3>
+              <p>مشاريع عُرضت على إدارة الجامعة ونائب الرئيس ولاقت قبولًا قويًا من أعضاء هيئة التدريس والطلاب.</p>
+            </article>
+            <article class="mini-card reveal" style="--d:.35s">
+              <span class="mini-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+              <h3>تعلّم مستمر</h3>
+              <p>اكتساب مهارات تقنية جديدة كل صيف عبر التعلّم الذاتي الموجّه والإرشاد الأكاديمي.</p>
+            </article>
+            <article class="mini-card reveal" style="--d:.45s">
+              <span class="mini-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <h3>روح الفريق</h3>
+              <p>حل مشكلات C++ التعاوني مع الزملاء والعمل التطوعي النشط ضمن فريق شباب الرواد.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ المهارات ============ -->
+    <section id="skills" aria-labelledby="skills-t">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="sec-num mono">02</span>
+          <h2 id="skills-t">المهارات</h2>
+          <span class="sec-line"></span>
+        </div>
+
+        <div class="skills-grid">
+          <article class="skill-card reveal" style="--d:.1s">
+            <span class="skill-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg></span>
+            <h3>المهارات التقنية</h3>
+            <div class="skill-group">
+              <h4>الواجهات الأمامية</h4>
+              <div class="chips">
+                <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">React</span><span class="chip">Tailwind CSS</span>
+              </div>
+            </div>
+            <div class="skill-group">
+              <h4>الخلفية وقواعد البيانات</h4>
+              <div class="chips">
+                <span class="chip">Supabase</span><span class="chip">PostgreSQL</span><span class="chip">SQL</span>
+              </div>
+            </div>
+            <div class="skill-group">
+              <h4>لغات البرمجة</h4>
+              <div class="chips">
+                <span class="chip">C++ (OOP)</span><span class="chip">Python</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" style="--d:.2s">
+            <span class="skill-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+            <h3>الأدوات والبيئات</h3>
+            <div class="chips">
+              <span class="chip">Git / GitHub</span><span class="chip">VS Code</span><span class="chip">Visual Studio</span><span class="chip">Figma</span><span class="chip">Stitch</span><span class="chip">أدوات التطوير المدعومة بالذكاء الاصطناعي (Antigravity وغيرها)</span>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" style="--d:.3s">
+            <span class="skill-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            <h3>المهارات الشخصية</h3>
+            <div class="chips">
+              <span class="chip">التعلّم الذاتي المستمر</span><span class="chip">حل المشكلات</span><span class="chip">العمل الجماعي</span><span class="chip">إدارة الوقت</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ الخبرات والأنشطة ============ -->
+    <section id="experience" aria-labelledby="exp-t">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="sec-num mono">03</span>
+          <h2 id="exp-t">الخبرات والأنشطة</h2>
+          <span class="sec-line"></span>
+        </div>
+
+        <ol class="timeline">
+          <li class="t-item reveal" style="--d:.05s">
+            <div class="t-top"><span class="t-year mono">2024 — 2028 (متوقّع)</span><span class="t-tag">تعليم</span></div>
+            <h3>بكالوريوس هندسة معلوماتية — مسار هندسة البرمجيات</h3>
+            <p class="t-org">جامعة الرواد للعلوم والتقنية</p>
+            <p>المعدل التراكمي 3.0 / 4.0 — حاليًا في السنة الثالثة، مع تركيز على تطوير الواجهات الأمامية وبناء تطبيقات الويب.</p>
+          </li>
+
+          <li class="t-item reveal" style="--d:.1s">
+            <div class="t-top"><span class="t-year mono">2024 — حتى الآن</span><span class="t-tag">مشروع</span></div>
+            <h3>بوابة طلاب جامعة الرواد — تطوير وصيانة مستمرة</h3>
+            <p>بناء بوابة متكاملة تجمع المواد والملخصات والامتحانات السابقة والفيديوهات التعليمية، مع ميزات تعلّم تفاعلية (تدوين الملاحظات ووضع إشارات مرجعية للمحاضرات). حاليًا أضيف عرض الدرجات وتحميل المواد، وأعيد بناء الواجهة بـ React.</p>
+            <p class="t-ach">★ عُرض المشروع على إدارة الجامعة ونائب الرئيس ولاقى قبولًا قويًا من أعضاء هيئة التدريس والطلاب.</p>
+          </li>
+
+          <li class="t-item reveal" style="--d:.15s">
+            <div class="t-top"><span class="t-year mono">خلال الدراسة</span><span class="t-tag">مشروع</span></div>
+            <h3>نظام إدارة منتجات التجارة الإلكترونية (CRUD)</h3>
+            <p>نظام يدعم الإدخال الجماعي حتى 100 منتج دفعة واحدة (السعر والخصم والضريبة)، مع منطق حساب تلقائي للسعر النهائي لكل منتج، وإمكانية التعديل والحذف الجماعي والفردي مع تحديث فوري للواجهة.</p>
+          </li>
+
+          <li class="t-item reveal" style="--d:.2s">
+            <div class="t-top"><span class="t-year mono">مستمر</span><span class="t-tag">تطوّع</span></div>
+            <h3>عضو متطوّع — فريق شباب الرواد (فرع جرابلس)</h3>
+            <p>عمل تطوعي نشط ضمن الفريق، إلى جانب المشاركة في تدريبات إدارة الوقت والعمل الجماعي.</p>
+          </li>
+
+          <li class="t-item reveal" style="--d:.25s">
+            <div class="t-top"><span class="t-year mono">كل صيف</span><span class="t-tag">تطوير ذاتي</span></div>
+            <h3>التعلّم الذاتي المستمر وحل المشكلات</h3>
+            <p>اكتساب مهارات تقنية جديدة كل صيف عبر التعلّم الذاتي الموجّه والإرشاد الأكاديمي، مع حل تحديات خوارزمية تعاونية بلغة C++ مع الزملاء.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ المشاريع ============ -->
+    <section id="projects" aria-labelledby="proj-t">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="sec-num mono">04</span>
+          <h2 id="proj-t">المشاريع</h2>
+          <span class="sec-line"></span>
+        </div>
+
+        <!-- مشروع 1 -->
+        <article class="project reveal">
+          <div class="project-media">
+            <div class="browser">
+              <div class="browser-bar">
+                <span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span>
+                <span class="url" dir="ltr">github.com/ali-alhumse/alruad-university-students</span>
+              </div>
+              <img src="https://image.qwenlm.ai/public_source/5f2c24d3-f9b4-42e5-8269-025c6413b2df/171811dcd-752d-4949-9b0f-a802214920e9.png" alt="واجهة لوحة بوابة طلاب جامعة الرواد" loading="lazy" />
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>بوابة طلاب جامعة الرواد</h3>
+            <p class="proj-sub mono" dir="ltr">alruad-university-students</p>
+            <p>منصة شاملة توحّد المواد والملخصات والامتحانات السابقة والفيديوهات التعليمية في مكان واحد، مع ميزات تعلّم تفاعلية مثل تدوين الملاحظات ووضع إشارات مرجعية للمحاضرات للمراجعة السريعة.</p>
+            <ul class="cs-list">
+              <li><span class="hl-p">التحدي:</span> تشتّت المصادر والمراجع الدراسية. <span class="hl-s">الحل:</span> منصة موحّدة تجمع المواد والملخصات والامتحانات والفيديوهات.</li>
+              <li><span class="hl-p">التحدي:</span> الحاجة إلى مراجعة سريعة. <span class="hl-s">الحل:</span> ميزات تفاعلية لتدوين الملاحظات ووضع إشارات مرجعية للمحاضرات.</li>
+              <li><span class="hl-p">الأثر:</span> عرض المشروع على الإدارة ونائب الرئيس بقبول قوي، مع صيانة نشطة (عرض الدرجات، تحميل المواد، إعادة بناء الواجهة بـ React).</li>
+            </ul>
+            <div class="chips proj-tech">
+              <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">React (قيد النقل)</span><span class="chip">Supabase</span><span class="chip">PostgreSQL</span>
+            </div>
+            <div class="proj-links">
+              <a class="btn btn-outline btn-sm" href="https://github.com/ali-alhumse/alruad-university-students" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                المستودع على GitHub
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- مشروع 2 -->
+        <article class="project flip reveal">
+          <div class="project-media">
+            <div class="browser">
+              <div class="browser-bar">
+                <span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span>
+                <span class="url" dir="ltr">product-management · CRUD</span>
+              </div>
+              <img src="https://image.qwenlm.ai/public_source/5f2c24d3-f9b4-42e5-8269-025c6413b2df/1f5845d41-7d96-4832-8ee4-da8f7d485384.png" alt="واجهة لوحة إدارة منتجات التجارة الإلكترونية" loading="lazy" />
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>نظام إدارة منتجات التجارة الإلكترونية (CRUD)</h3>
+            <p class="proj-sub mono">Bulk entry · auto price calc</p>
+            <p>نظام لإدارة المنتجات مبني على عمليات CRUD، يدعم الإدخال الجماعي حتى 100 منتج دفعة واحدة مع حقول السعر والخصم والضريبة، وحساب تلقائي للسعر النهائي لكل منتج.</p>
+            <ul class="cs-list">
+              <li><span class="hl-p">التحدي:</span> إدخال عدد كبير من المنتجات. <span class="hl-s">الحل:</span> إدخال جماعي حتى 100 منتج دفعة واحدة.</li>
+              <li><span class="hl-p">التحدي:</span> حساب السعر بدقة. <span class="hl-s">الحل:</span> منطق تلقائي يطبّق الخصم والضريبة على كل منتج.</li>
+              <li><span class="hl-p">الميزة:</span> تعديل وحذف جماعي وفردي للسجلات مع تحديث فوري للواجهة.</li>
+            </ul>
+            <div class="chips proj-tech">
+              <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span>
+            </div>
+            <div class="proj-links">
+              <a class="btn btn-outline btn-sm" href="https://github.com/ali-alhumse" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                الملف الشخصي على GitHub
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ التعليم والشهادات ============ -->
+    <section id="education" aria-labelledby="edu-t">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="sec-num mono">05</span>
+          <h2 id="edu-t">التعليم والشهادات</h2>
+          <span class="sec-line"></span>
+        </div>
+
+        <div class="edu-grid">
+          <article class="edu-card reveal" style="--d:.1s">
+            <span class="edu-ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/></svg></span>
+            <h3>بكالوريوس هندسة معلوماتية — مسار هندسة البرمجيات</h3>
+            <p class="edu-org">جامعة الرواد للعلوم والتقنية</p>
+            <div class="edu-facts">
+              <div><strong>2024 — 2028</strong><span>المدة (متوقّع)</span></div>
+              <div><strong>3.0 / 4.0</strong><span>المعدل التراكمي</span></div>
+              <div><strong>السنة الثالثة</strong><span>الحالة الحالية</span></div>
+            </div>
+          </article>
+
+          <div class="edu-side">
+            <article class="cert-card reveal" style="--d:.2s">
+              <h3>الشهادات والتدريبات</h3>
+              <ul class="cert-list">
+                <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg> تدريب إدارة الوقت</li>
+                <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg> تدريب العمل الجماعي</li>
+                <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg> عضو نشط — فريق متطوّعي الرواد</li>
+                <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg> شهادات جامعية رسمية (متعلقة بالتخصص)</li>
+              </ul>
+            </article>
+
+            <article class="cert-card reveal" style="--d:.3s">
+              <h3>اللغات</h3>
+              <div class="lang-list">
+                <div class="lang-item"><span>العربية</span><span class="lang-level">لغة أم</span></div>
+                <div class="lang-item"><span>الإنجليزية</span><span class="lang-level">مستوى متوسط</span></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ الإنجازات ============ -->
+    <section id="achievements" aria-labelledby="ach-t">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="sec-num mono">06</span>
+          <h2 id="ach-t">إنجازات وأرقام</h2>
+          <span class="sec-line"></span>
+        </div>
+
+        <div class="stats">
+          <div class="stat reveal" style="--d:.05s"><span class="stat-num"><span class="num" data-target="2">0</span></span><span class="stat-label">مشروع ويب مبنيّ ومُصان</span></div>
+          <div class="stat reveal" style="--d:.12s"><span class="stat-num"><span class="num" data-target="3.0" data-decimals="1">0</span><span class="stat-suf">/4.0</span></span><span class="stat-label">المعدل التراكمي</span></div>
+          <div class="stat reveal" style="--d:.19s"><span class="stat-num"><span class="num" data-target="100">0</span></span><span class="stat-label">منتج لكل إدخال جماعي</span></div>
+          <div class="stat reveal" style="--d:.26s"><span class="stat-num"><span class="num" data-target="3">0</span><span class="stat-suf">rd</span></span><span class="stat-label">السنة الدراسية الحالية</span></div>
+        </div>
+
+        <div class="highlights">
+          <article class="hl-card reveal" style="--d:.1s">
+            <span class="hl-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>
+            <h3>عرض على نائب الرئيس</h3>
+            <p>قدّمت بوابة الطلاب لإدارة الجامعة ونائب الرئيس، ولاقت قبولًا قويًا من أعضاء هيئة التدريس والطلاب.</p>
+          </article>
+          <article class="hl-card reveal" style="--d:.2s">
+            <span class="hl-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></span>
+            <h3>منتج في صيانة نشطة</h3>
+            <p>تطوير مستمر للبوابة: عرض الدرجات، تحميل المواد، وإعادة بناء الواجهة الأمامية بـ React.</p>
+          </article>
+          <article class="hl-card reveal" style="--d:.3s">
+            <span class="hl-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+            <h3>متطوّع نشط</h3>
+            <p>عضو في فريق شباب الرواد — فرع جرابلس، مع مشاركة في تدريبات العمل الجماعي وإدارة الوقت.</p>
+          </article>
+          <article class="hl-card reveal" style="--d:.4s">
+            <span class="hl-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+            <h3>لا أتوقف عن التعلّم</h3>
+            <p>اكتساب مهارات تقنية جديدة كل صيف عبر التعلّم الذاتي الموجّه والإرشاد الأكاديمي.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ التواصل ============ -->
+    <section id="contact" aria-labelledby="con-t">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="sec-num mono">07</span>
+          <h2 id="con-t">تواصل معي</h2>
+          <span class="sec-line"></span>
+        </div>
+        <p class="con-intro reveal" style="--d:.1s">لديك مشروع أو فرصة عمل أو فكرة للتعاون؟ يسعدني أن نتحدث — راسلني مباشرة وسأعود إليك في أقرب وقت.</p>
+
+        <div class="contact-grid">
+          <div class="contact-info">
+            <a class="c-card reveal" style="--d:.15s" href="mailto:alialhumse820@gmail.com">
+              <span class="c-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+              <div><span class="c-label">البريد الإلكتروني</span><span class="c-val mono" dir="ltr">alialhumse820@gmail.com</span></div>
+            </a>
+            <a class="c-card reveal" style="--d:.22s" href="tel:+306998776306">
+              <span class="c-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.5a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg></span>
+              <div><span class="c-label">الهاتف</span><span class="c-val mono" dir="ltr">+30 699 877 6306</span></div>
+            </a>
+            <a class="c-card reveal" style="--d:.29s" href="https://github.com/ali-alhumse" target="_blank" rel="noopener">
+              <span class="c-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg></span>
+              <div><span class="c-label">GitHub</span><span class="c-val mono" dir="ltr">github.com/ali-alhumse</span></div>
+            </a>
+            <div class="c-card reveal" style="--d:.36s">
+              <span class="c-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+              <div><span class="c-label">الموقع</span><span class="c-val">جرابلس، حلب، سوريا</span></div>
+            </div>
+          </div>
+
+          <form class="contact-form reveal" style="--d:.2s" id="contactForm" novalidate>
+            <div class="field">
+              <label for="cf-name">الاسم</label>
+              <input type="text" id="cf-name" name="name" required autocomplete="name" placeholder="اسمك الكامل" />
+            </div>
+            <div class="field">
+              <label for="cf-email">البريد الإلكتروني</label>
+              <input type="email" id="cf-email" name="email" required autocomplete="email" placeholder="you@example.com" dir="ltr" />
+            </div>
+            <div class="field">
+              <label for="cf-msg">الرسالة</label>
+              <textarea id="cf-msg" name="message" rows="5" required placeholder="اكتب رسالتك أو تفاصيل الفرصة..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+              إرسال الرسالة
+            </button>
+            <p class="form-note">سيتم فتح تطبيق البريد لديك لإرسال الرسالة (mailto).</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Footer ============ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo mono">&lt;Ali&nbsp;/&gt;</span>
+        <p>مطوّر واجهات أمامية — React &amp; Tailwind CSS. أبني واجهات نظيفة وسريعة ومتاحة.</p>
+      </div>
+      <nav class="footer-nav" aria-label="روابط سريعة">
+        <a href="#about">نبذة</a><a href="#skills">المهارات</a><a href="#projects">المشاريع</a><a href="#contact">تواصل</a>
+      </nav>
+      <div class="footer-social">
+        <a href="https://github.com/ali-alhumse" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg></a>
+        <a href="mailto:alialhumse820@gmail.com" aria-label="البريد الإلكتروني"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a>
+        <a href="tel:+306998776306" aria-label="الهاتف"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.5a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg></a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© <span id="year"></span> علي أحمد القاسم — جميع الحقوق محفوظة.</span>
+      <span class="mono">Built with HTML5 · CSS3 · Vanilla JavaScript</span>
+    </div>
+  </footer>
+
+  <button id="backTop" class="back-top" type="button" aria-label="العودة للأعلى">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+</body>
+</html>
+
+
+              <script>
+                              /* ============ script.js ============ */
+/* =========================================================
+   Ali Ahmad Algasem — Portfolio
+   ملاحظة مهمة: كل المحتوى يظهر حتى لو تعطّل الجافاسكربت،
+   والحركات تُفعَّل فقط عند نجاح تحميل السكربت (class="js").
+========================================================= */
+'use strict';
+
+/* 0) تفعيل الحركات فقط عندما يعمل JS (حماية من اختفاء الأقسام) */
+document.documentElement.classList.add('js');
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* تخزين آمن (قد يكون محظورًا في بعض بيئات المعاينة) */
+const storage = {
+  get(key) { try { return window.localStorage.getItem(key); } catch (err) { return null; } },
+  set(key, val) { try { window.localStorage.setItem(key, val); } catch (err) { /* تجاهل */ } }
+};
+
+/* ---------- 1) الوضع الليلي / النهاري ---------- */
+const rootEl = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = storage.get('aa-theme');
+if (savedTheme === 'light' || savedTheme === 'dark') rootEl.dataset.theme = savedTheme;
+
+function syncThemeIcon() {
+  if (!themeToggle) return;
+  const dark = rootEl.dataset.theme === 'dark';
+  const sun = themeToggle.querySelector('.icon-sun');
+  const moon = themeToggle.querySelector('.icon-moon');
+  if (sun) sun.style.display = dark ? 'block' : 'none';
+  if (moon) moon.style.display = dark ? 'none' : 'block';
+  themeToggle.setAttribute('aria-label', dark ? 'تفعيل الوضع النهاري' : 'تفعيل الوضع الليلي');
+}
+syncThemeIcon();
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    rootEl.dataset.theme = (rootEl.dataset.theme === 'dark') ? 'light' : 'dark';
+    storage.set('aa-theme', rootEl.dataset.theme);
+    syncThemeIcon();
+  });
+}
+
+/* ---------- 2) قائمة الموبايل ---------- */
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+if (navToggle && navLinks) {
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', String(open));
+    navToggle.setAttribute('aria-label', open ? 'إغلاق القائمة' : 'فتح القائمة');
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+/* ---------- 3) ظل الشريط + زر العودة للأعلى ---------- */
+const navbar = document.getElementById('navbar');
+const backTop = document.getElementById('backTop');
+function onScroll() {
+  const y = window.scrollY || window.pageYOffset || 0;
+  if (navbar) navbar.classList.toggle('scrolled', y > 12);
+  if (backTop) backTop.classList.toggle('show', y > 520);
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+if (backTop) {
+  backTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+}
+
+/* ---------- 4) تتبع القسم النشط (Scroll Spy) ---------- */
+const spyLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+const spySections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+if (spyLinks.length && spySections.length && 'IntersectionObserver' in window) {
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = '#' + entry.target.id;
+        spyLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+      }
+    });
+  }, { rootMargin: '-42% 0px -53% 0px' });
+  spySections.forEach(sec => spy.observe(sec));
+}
+
+/* ---------- 5) الكشف عند التمرير (مع شبكة أمان) ---------- */
+const revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+function showAllReveals() { revealEls.forEach(el => el.classList.add('in')); }
+if (revealEls.length) {
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('in'); obs.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+    revealEls.forEach(el => io.observe(el));
+    /* شبكة أمان: لا يبقى أي قسم مخفيًا مهما حدث */
+    window.addEventListener('load', () => { setTimeout(showAllReveals, 2500); });
+  } else {
+    showAllReveals();
+  }
+  /* إظهار كل شيء عند الطباعة (تحميل السيرة PDF) */
+  window.addEventListener('beforeprint', showAllReveals);
+}
+
+/* ---------- 6) شريط التقنيات (نسخ المحتوى لحلقة سلسة) ---------- */
+const marqueeTrack = document.getElementById('marqueeTrack');
+if (marqueeTrack) marqueeTrack.innerHTML += marqueeTrack.innerHTML;
+
+/* ---------- 7) آلة الكتابة للعنوان ---------- */
+const twEl = document.getElementById('typewriter');
+const roles = ['مطوّر واجهات أمامية', 'مطوّر React و Tailwind CSS', 'طالب هندسة برمجيات', 'بانٍ لواجهات الويب'];
+if (twEl) {
+  if (reduceMotion) {
+    twEl.textContent = roles[0];
+  } else {
+    let roleIdx = 0, charIdx = 0, deleting = false;
+    const tick = () => {
+      const word = roles[roleIdx];
+      if (!deleting) {
+        charIdx++;
+        twEl.textContent = word.slice(0, charIdx);
+        if (charIdx === word.length) { deleting = true; setTimeout(tick, 1700); return; }
+      } else {
+        charIdx--;
+        twEl.textContent = word.slice(0, charIdx);
+        if (charIdx === 0) { deleting = false; roleIdx = (roleIdx + 1) % roles.length; }
+      }
+      setTimeout(tick, deleting ? 45 : 85);
+    };
+    tick();
+  }
+}
+
+/* ---------- 8) الطرفية التفاعلية ---------- */
+const termBody = document.getElementById('termBody');
+const termData = [
+  { cmd: 'whoami', out: ['Ali Ahmad Algasem'] },
+  { cmd: 'cat role.txt', out: ['Front-end Developer - React & Tailwind CSS'] },
+  { cmd: 'cat education.txt', out: ['B.Sc. Software Engineering | 3rd year | GPA 3.0/4.0'] },
+  { cmd: 'ls skills/', out: ['html/  css/  javascript/  react/  tailwind/', 'supabase/  postgresql/  cpp/  python/'] },
+  { cmd: './status.sh', out: ['[OK] Ready for work opportunities'] }
+];
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+async function typeInto(el, text, speed) {
+  for (let i = 0; i < text.length; i++) { el.textContent += text.charAt(i); await sleep(speed); }
+}
+async function runTerminal() {
+  if (!termBody) return;
+  if (reduceMotion) {
+    termData.forEach(line => {
+      const c = document.createElement('div'); c.className = 't-line';
+      const p = document.createElement('span'); p.className = 't-prompt'; p.textContent = '$ ';
+      const cm = document.createElement('span'); cm.className = 't-cmd'; cm.textContent = line.cmd;
+      c.appendChild(p); c.appendChild(cm); termBody.appendChild(c);
+      line.out.forEach(o => { const d = document.createElement('div'); d.className = 't-line t-out'; d.textContent = o; termBody.appendChild(d); });
+    });
+    return;
+  }
+  for (const line of termData) {
+    const c = document.createElement('div'); c.className = 't-line';
+    const p = document.createElement('span'); p.className = 't-prompt'; p.textContent = '$ ';
+    const cm = document.createElement('span'); cm.className = 't-cmd';
+    c.appendChild(p); c.appendChild(cm); termBody.appendChild(c);
+    await typeInto(cm, line.cmd, 32);
+    await sleep(140);
+    for (const o of line.out) {
+      const d = document.createElement('div'); d.className = 't-line t-out'; d.textContent = o; termBody.appendChild(d);
+    }
+    await sleep(320);
+  }
+  const cur = document.createElement('div'); cur.className = 't-line';
+  const cp = document.createElement('span'); cp.className = 't-prompt'; cp.textContent = '$ ';
+  const cc = document.createElement('span'); cc.className = 't-caret';
+  cur.appendChild(cp); cur.appendChild(cc); termBody.appendChild(cur);
+}
+setTimeout(runTerminal, 650);
+
+/* ---------- 9) عدّادات الإنجازات ---------- */
+function animateCount(el) {
+  const target = parseFloat(el.getAttribute('data-target')) || 0;
+  const dec = parseInt(el.getAttribute('data-decimals') || '0', 10);
+  if (reduceMotion) { el.textContent = target.toFixed(dec); return; }
+  const dur = 1500;
+  const t0 = performance.now();
+  function step(t) {
+    const prog = Math.min((t - t0) / dur, 1);
+    const eased = 1 - Math.pow(1 - prog, 3);
+    el.textContent = (target * eased).toFixed(dec);
+    if (prog < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+const statsSection = document.getElementById('achievements');
+if (statsSection && 'IntersectionObserver' in window) {
+  const statObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.num').forEach(animateCount);
+        statObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  statObserver.observe(statsSection);
+} else if (statsSection) {
+  statsSection.querySelectorAll('.num').forEach(animateCount);
+}
+
+/* ---------- 10) شبكة الجسيمات على Canvas ---------- */
+(function initParticles() {
+  const canvas = document.getElementById('bgCanvas');
+  if (!canvas || typeof canvas.getContext !== 'function') return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  let W = 0, H = 0, parts = [], raf = null;
+  const palette = ['45,212,191', '251,191,36', '56,189,248'];
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    const n = Math.min(Math.floor((W * H) / 17000), 90);
+    parts = [];
+    for (let i = 0; i < n; i++) {
+      parts.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
+        r: Math.random() * 1.7 + 0.6,
+        c: palette[Math.floor(Math.random() * palette.length)]
+      });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    for (const pt of parts) {
+      pt.x += pt.vx; pt.y += pt.vy;
+      if (pt.x < 0) pt.x = W; if (pt.x > W) pt.x = 0;
+      if (pt.y < 0) pt.y = H; if (pt.y > H) pt.y = 0;
+      ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + pt.c + ',.55)'; ctx.fill();
+    }
+    for (let i = 0; i < parts.length; i++) {
+      for (let j = i + 1; j < parts.length; j++) {
+        const a = parts[i], b = parts[j];
+        const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+        if (d2 < 14400) {
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = 'rgba(56,189,248,' + ((1 - Math.sqrt(d2) / 120) * 0.12).toFixed(3) + ')';
+          ctx.stroke();
+        }
+      }
+    }
+    raf = requestAnimationFrame(draw);
+  }
+  function start() { if (!raf && !reduceMotion) draw(); }
+  function stop() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+  resize();
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { stop(); } else { start(); } });
+  if (reduceMotion) { draw(); stop(); } else { start(); }
+})();
+
+/* ---------- 11) نموذج التواصل (mailto) ---------- */
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+  contactForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const nameEl = document.getElementById('cf-name');
+    const emailEl = document.getElementById('cf-email');
+    const msgEl = document.getElementById('cf-msg');
+    const name = nameEl ? nameEl.value.trim() : '';
+    const email = emailEl ? emailEl.value.trim() : '';
+    const msg = msgEl ? msgEl.value.trim() : '';
+    if (!name || !email || !msg) {
+      [nameEl, emailEl, msgEl].forEach(f => { if (f && !f.value.trim()) f.focus(); });
+      return;
+    }
+    const subject = encodeURIComponent('رسالة من البورتفوليو - ' + name);
+    const body = encodeURIComponent('الاسم: ' + name + '\nالبريد: ' + email + '\n\n' + msg);
+    window.location.href = 'mailto:alialhumse820@gmail.com?subject=' + subject + '&body=' + body;
+  });
+}
+
+/* ---------- 12) تحميل السيرة الذاتية (طباعة / حفظ PDF) ---------- */
+const downloadCv = document.getElementById('downloadCv');
+if (downloadCv) downloadCv.addEventListener('click', () => window.print());
+
+/* ---------- 13) السنة الحالية في التذييل ---------- */
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+
+              </script>
+                        </body>
+                        </html>
+                    
