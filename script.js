@@ -169,7 +169,7 @@ const termBody = document.getElementById('termBody');
 const termData = [
   { cmd: 'whoami', out: ['Ali Ahmad Alkasem'] },
   { cmd: 'cat role.txt', out: ['Front-end & Mobile Developer - React & React Native'] },
-  { cmd: 'cat education.txt', out: ['B.Sc. Software Engineering | 3rd year | GPA 3.0/4.0'] },
+  { cmd: 'cat education.txt', out: ['B.Sc. Software Engineering | 3rd year | GPA 3.25/4.0'] },
   { cmd: 'ls skills/', out: ['html/  css/  javascript/  react/  react-native/  tailwind/', 'supabase/  postgresql/  cpp/  python/'] },
   { cmd: './status.sh', out: ['[OK] Ready for work opportunities'] }
 ];

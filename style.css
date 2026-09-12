@@ -544,14 +544,16 @@ section { padding-block: clamp(72px, 9vw, 104px); }
 /* ---------- التواصل ---------- */
 .con-intro { color: var(--muted); max-width: 60ch; margin: -22px auto 40px; text-align: center; font-size: 1.05rem; }
 .contact-grid { display: grid; gap: 28px; }
+.contact-grid > * { min-width: 0; }
 .contact-info { display: grid; gap: 14px; }
 .c-card { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; transition: transform .3s, border-color .3s; }
 .c-card:hover { transform: translateX(-5px); border-color: var(--teal); }
+.c-card > div { min-width: 0; }
 .c-ic { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 12px; background: rgba(45, 212, 191, .14); color: var(--teal); flex-shrink: 0; }
 .c-ic.whatsapp-ic { background: rgba(37, 211, 102, .14); color: #25d366; }
 .c-card:hover .whatsapp-ic { box-shadow: 0 0 16px rgba(37, 211, 102, .3); }
 .c-label { display: block; font-size: .78rem; color: var(--muted); }
-.c-val { font-weight: 600; }
+.c-val { display: block; font-weight: 600; overflow-wrap: anywhere; }
 .contact-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 18px; }
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field label { font-size: .88rem; color: var(--muted); font-weight: 500; }
@@ -761,6 +763,7 @@ section { padding-block: clamp(72px, 9vw, 104px); }
     max-width: 420px;
     margin-inline: auto;
   }
+  .contact-form { padding: 20px 16px; }
   .fc-2, .fc-3, .fc-4 { display: none; }
   .hero-visual {
     margin-bottom: 34px;
